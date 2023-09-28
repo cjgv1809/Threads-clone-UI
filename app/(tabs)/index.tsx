@@ -1,31 +1,57 @@
-import { StyleSheet } from 'react-native';
-
-import EditScreenInfo from '../../components/EditScreenInfo';
-import { Text, View } from '../../components/Themed';
+import { useContext, useRef } from "react";
+import {
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  RefreshControl,
+  useColorScheme,
+} from "react-native";
+import Lottie from "lottie-react-native";
+import { View } from "../../components/Themed";
+import { ThreadsContext } from "../../context/threadContext";
+import ThreadsItem from "../../components/ThreadsItem";
 
 export default function TabOneScreen() {
+  const animationRef = useRef<Lottie>(null);
+  const threads = useContext(ThreadsContext);
+  const currentTheme = useColorScheme();
+  const backgroundColor = currentTheme === "dark" ? "#000" : "#fff";
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-    </View>
+    <SafeAreaView style={[{ backgroundColor }, styles.container]}>
+      <ScrollView
+        contentContainerStyle={styles.wrapper}
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => animationRef.current?.play()}
+            tintColor="transparent"
+          />
+        }
+        showsVerticalScrollIndicator={false}
+      >
+        <Lottie
+          source={require("../../assets/lottie/animation-threads.json")}
+          loop={false}
+          autoPlay
+          style={{ width: 90, height: 90, alignSelf: "center" }}
+        />
+        <View style={styles.container}>
+          {threads.map((thread) => (
+            <ThreadsItem key={thread.id} thread={thread} />
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 10,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  wrapper: {
+    padding: 20,
   },
 });
