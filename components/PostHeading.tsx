@@ -44,9 +44,12 @@ const styles = StyleSheet.create({
   },
   username: {
     fontWeight: "700",
+    fontSize: 13,
     marginRight: 1,
   },
   time: {
     color: "gray",
+    marginLeft: 1,
+    fontSize: 11,
   },
 });
